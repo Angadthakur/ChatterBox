@@ -1,3 +1,4 @@
+import 'package:chatter_box/pages/home.dart';
 import 'package:chatter_box/pages/login.dart';
 import 'package:chatter_box/pages/signup.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Chatter Box',
       debugShowCheckedModeBanner: false,
 
-      home: Signup(),
+      home: LoginPage(),
     );
 
     
