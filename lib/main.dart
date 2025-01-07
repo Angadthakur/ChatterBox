@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Chatter Box',
       debugShowCheckedModeBanner: false,
 
-      home: LoginPage(),
+      home: Signup(),
     );
 
     

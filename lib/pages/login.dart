@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextField(
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                hintText: 'Enter your email ID',
+                                hintText: 'Enter email ID',
                                 prefixIcon: Icon(Icons.mail_outline)
                               
                               ),
@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextField(
                              decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                hintText: 'Enter your password',
+                                hintText: 'Enter password',
                                 prefixIcon: Icon(Icons.password_outlined)
                                ),
                               obscureText: true,
@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                         fontSize: 16.0),
                     ),
                     Text(
-                      " Sign Up NOW!!",
+                      " Sign Up.",
                       style: TextStyle(
                         color: Colors.purple,
                         fontSize: 16.0,
