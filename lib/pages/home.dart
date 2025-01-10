@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                height: MediaQuery.of(context).size.height / 1.15,
+                height: MediaQuery.of(context).size.height / 1.18, //1.15
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
                           '02:30 PM',
                           style: TextStyle(
                               color: Colors.black45,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -152,7 +152,7 @@ class _HomeState extends State<Home> {
                           '05:16 PM',
                           style: TextStyle(
                               color: Colors.black45,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
