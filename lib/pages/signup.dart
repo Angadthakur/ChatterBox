@@ -1,9 +1,11 @@
 import 'package:chatter_box/pages/home.dart';
+import 'package:chatter_box/pages/login.dart';
 import 'package:chatter_box/service/database.dart';
 import 'package:chatter_box/service/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -39,6 +41,7 @@ registration() async{
     String ID =randomAlphaNumeric(10);
 
 
+
     Map<String, dynamic>userInfoMap={
       "Name":namecontroller.text,
       "E-mail":emailcontroller.text,
@@ -48,18 +51,14 @@ registration() async{
     };
 
     await DatabaseMethods().addUserDetails(userInfoMap, ID); // Upload the data to firebse firestore.
-    await SharedPrefHelper().saveUserId(ID);
+
+   /* await SharedPrefHelper().saveUserId(ID);
     await SharedPrefHelper().saveUserDisplayName(namecontroller.text);
     await SharedPrefHelper().saveUserEmail(emailcontroller.text);
     await SharedPrefHelper().saveUserPic("https://cdn-icons-png.flaticon.com/512/4202/4202841.png");
-    await SharedPrefHelper().saveUserName(emailcontroller.text.replaceAll("@gmail.com", ""));
-
-
-
-
-
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    await SharedPrefHelper().saveUserName(emailcontroller.text.replaceAll("@gmail.com", ""));  */
+    
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           "Registered Successfully", 
       style: TextStyle(
@@ -106,7 +105,9 @@ registration() async{
             child: Stack(
               children: [
                 Container(
-                    height: MediaQuery.of(context).size.height /3.7,
+                    //height: 30.5.h,
+                    height: Adaptive.sp(65.5),
+                    //height: MediaQuery.of(context).size.height /3.7,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -129,7 +130,7 @@ registration() async{
                         ),
                       ),
                       SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       Center(
                         child: Text(
@@ -152,8 +153,9 @@ registration() async{
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 15.0, horizontal: 20.0),
-                            height: MediaQuery.of(context).size.height/1.5,  // 1.5
+                            //height: MediaQuery.of(context).size.height/1.5,  // 1.5
                             width: MediaQuery.of(context).size.width,
+                            height: Adaptive.sp(100),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
@@ -167,7 +169,7 @@ registration() async{
                                     'Name',
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 20,
+                                        fontSize: 15, //20
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Container(
@@ -198,7 +200,7 @@ registration() async{
                                     'Email',
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 20,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Container(
@@ -228,7 +230,7 @@ registration() async{
                                     'Password',
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 20,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Container(
@@ -260,7 +262,7 @@ registration() async{
                                     'Confirm Password',
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 20,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Container(
@@ -309,7 +311,7 @@ registration() async{
                                       elevation: 5.0,
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Container(
-                                        width: 130.0,
+                                        //width: 130.0,
                                         padding: EdgeInsets.all(15.0),
                                         decoration: BoxDecoration(
                                             color: Color(0xFFB388FF),
@@ -320,7 +322,7 @@ registration() async{
                                             'Sign Up',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 18.0,
+                                                fontSize: 15.0,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -342,12 +344,17 @@ registration() async{
                             style:
                                 TextStyle(color: Colors.black, fontSize: 16.0),
                           ),
-                          Text(
-                            " LogIn.",
-                            style: TextStyle(
-                                color: Colors.purple,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600),
+                          GestureDetector(
+                            onTap:() {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                            },
+                            child: Text(
+                              " LogIn.",
+                              style: TextStyle(
+                                  color: Colors.purple,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           )
                         ],
                       )
