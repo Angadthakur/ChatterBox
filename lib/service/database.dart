@@ -15,7 +15,7 @@ class DatabaseMethods {
         .doc(id)
         .set(userInfoMap);
   }
-// Email Query 
+// Email Query (LogIn)
   Future<QuerySnapshot> getUserbyemail(String email) async {
     return await FirebaseFirestore.instance
         .collection("users")
