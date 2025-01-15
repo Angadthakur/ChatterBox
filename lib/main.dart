@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Chatter Box',
         debugShowCheckedModeBanner: false,
-        home: LoginPage(),
+        home: Authgate(),
       );
     });
   }

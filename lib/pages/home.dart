@@ -1,5 +1,6 @@
 import 'package:chatter_box/pages/login.dart';
 import 'package:chatter_box/service/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -12,58 +13,66 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool search = false;
 
-//List 
-var queryResultSet=[];
-var tempSearchStore=[];
+  // Lists to store search results
+  var queryResultSet = [];
+  var tempSearchStore = [];
 
+  // Function to handle search queries
+  void initiateSearch(String value) async {
+    if (value.isEmpty) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+      return;
+    }
 
+    // Perform Firestore query to search users by username
+    var queryResults = await DatabaseMethods().getUserByUsername(value);
 
-initiateSearch(value){
-  if(value.length==0){
     setState(() {
-      queryResultSet=[]; // Null list if the length in 0
-      tempSearchStore=[];
+      queryResultSet = queryResults; // Raw Firestore documents
+      tempSearchStore = queryResults
+          .map((doc) => doc.data() as Map<String, dynamic>) // Extract user data
+          .toList();
     });
   }
-  setState(() {
-    search=true; // when user type on the search field all the chats disappear and username appears
-  });
 
-  var capitalizedValue= value;
+  // Logout function
+  void logout() async {
+    final _auth = DatabaseMethods();
 
+    // Sign out the user
+    await _auth.signOut();
 
-
-}
-
-void logout() async {
-  final _auth = DatabaseMethods();
-
-  // Sign out the user
-  await _auth.signOut();
-
-  // Navigate to the LoginPage
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => LoginPage()),
-    (route) => false, // Removes all previous routes from the stack
-  );
-}
-
+    // Navigate to the LoginPage
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false, // Removes all previous routes from the stack
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Color(0xFFB388FF),
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          child: Container(
+    return GestureDetector(
+      onTap: () {
+        if (search){
+          setState(() {
+            search=false;
+          });
+        }
+      },
+      child: Scaffold(
+          backgroundColor: Color(0xFFB388FF),
+          resizeToAvoidBottomInset: true,
+          body: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 20.0, right: 20.0, top: 50.0, bottom: 20.0),
                   child: Row(
-
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
@@ -72,32 +81,43 @@ void logout() async {
                         },
                         child: Container(
                           padding: EdgeInsets.all(8),
-                          decoration:BoxDecoration(
-                            color: Colors.black26,
-                            borderRadius: BorderRadius.circular(20)
-                          ) ,
+                          decoration: BoxDecoration(
+                              color: Colors.black26,
+                              borderRadius: BorderRadius.circular(20)),
                           child: Tooltip(
                             message: "Log Out",
                             textStyle: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,),
-                            child: Icon(Icons.logout_outlined,color: Colors.white,))),
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                            child: Icon(
+                              Icons.logout_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                       search
                           ? Expanded(
                               child: TextField(
-                              decoration: InputDecoration(
+                                onChanged: (value) {
+                                  initiateSearch(value); // Trigger search on text input
+                                },
+                                decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: 'Search User',
                                   hintStyle: TextStyle(
-                                      color: Colors.black38,
-                                      fontWeight: FontWeight.w500)),
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.0, 
-                                        fontWeight: FontWeight.w500
-                                      ),
-                            ))
+                                    color: Colors.black38,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
                           : Text(
                               'Chatter Box',
                               style: TextStyle(
@@ -105,149 +125,80 @@ void logout() async {
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold),
                             ),
-                            
                       GestureDetector(
                         onTap: () {
-                          search = true;
-                          setState(() {});
+                          setState(() {
+                            search = true;
+                          });
                         },
                         child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: Colors.black26,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.white,
-                            )),
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Colors.black26,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                        ),
                       )
                     ],
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  height: search?MediaQuery.of(context).size.height/1.19: MediaQuery.of(context).size.height / 1.18, //1.15
+                  height: MediaQuery.of(context).size.height / 1.1,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20))),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.asset(
-                                'assets/person1.png',
-                                height: 70.0,
-                                width: 70.0,
-                                fit: BoxFit.cover,
-                              )),
-                          SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //SizedBox(height: 10.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Angad Thakur',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
+                  child: search
+                      ? ListView.builder(
+                          itemCount: tempSearchStore.length,
+                          itemBuilder: (context, index) {
+                            var user = tempSearchStore[index];
+                            return ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.network(
+                                  user['Photo'], // User's photo URL
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              Text(
-                                'Hello, how are you?',
+                              title: Text(
+                                user['username'], // Display username
                                 style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ],
-                          ),
-                          //SizedBox(width: 50),
-                          Spacer(),
-                          Text(
-                            '02:30 PM',
-                            style: TextStyle(
-                                color: Colors.black45,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: Image.asset(
-                              'assets/person2.png',
-                              height: 70,
-                              width: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //SizedBox(height: 10,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Joseph Joestar',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                'Are you free tonight?',
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          // SizedBox(
-                          //   width: 50,
-                          // ),
-                          Text(
-                            '05:16 PM',
-                            style: TextStyle(
-                                color: Colors.black45,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
+                              subtitle: Text(user['E-mail']), // Display email
+                              onTap: () {
+                                // Action on selecting a user (e.g., navigate to chat page)
+                                print('User selected: ${user['username']}');
+                              },
+                            );
+                          },
+                        )
+                      : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'No Chat 😔 \nSeach for a friend 🤩',
+                              style: TextStyle(
+                                  color: Colors.black45, fontSize: 20.0),
+                            )
+                          ],
+                        ),
+                ),
               ],
             ),
-          ),
-        ));
+          )),
+    );
   }
 }
 

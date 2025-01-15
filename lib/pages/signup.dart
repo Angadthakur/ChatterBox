@@ -304,7 +304,7 @@ class _SignupState extends State<Signup> {
                                       elevation: 5.0,
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: Container(
-                                        //width: 130.0,
+                                        width: 130.0,
                                         padding: EdgeInsets.all(15.0),
                                         decoration: BoxDecoration(
                                             color: Color(0xFFB388FF),

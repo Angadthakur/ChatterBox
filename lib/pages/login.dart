@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 30.0, horizontal: 20.0),
-                            height: MediaQuery.of(context).size.height / 2,
+                            height: MediaQuery.of(context).size.height / 1.8,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                                 color: Colors.white,
